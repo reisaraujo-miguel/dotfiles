@@ -1,9 +1,8 @@
 #!/bin/bash
-
 # Configuration
-DOTFILES_DIR="./"                                                    # Replace with your dotfiles directory
-BACKUP_DIR="./dotfiles_backup"                                       # Backup directory for existing configs
-EXCLUDE_FILES=".git .gitignore install.sh README.md dotfiles_backup" # Files/dirs to exclude
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"                 # Use absolute path of script directory
+BACKUP_DIR="$DOTFILES_DIR/dotfiles_backup"                                   # Backup directory for existing configs
+EXCLUDE_FILES=".git .gitignore install.sh README.md LICENSE dotfiles_backup" # Files/dirs to exclude
 
 # Function to create backup directory if it doesn't exist
 create_backup_dir() {
@@ -18,17 +17,16 @@ create_symlinks() {
 	for file in "$DOTFILES_DIR"/*; do
 		if [[ -f "$file" || -d "$file" ]]; then
 			filename=$(basename "$file")
-			if [[ " $EXCLUDE_FILES " != *" $filename "* ]]; then
+			# Check if the file should be excluded
+			if [[ ! " $EXCLUDE_FILES " =~ [[:space:]]"$filename"[[:space:]] ]]; then
 				target_file="$HOME/$filename"
-
-				if [ -e "$target_file" ]; then
+				if [ -e "$target_file" ] || [ -L "$target_file" ]; then
 					# Backup existing file
 					create_backup_dir
 					backup_file="$BACKUP_DIR/$filename.$(date +%Y%m%d_%H%M%S)"
 					mv "$target_file" "$backup_file"
 					echo "Backed up existing file: $target_file to $backup_file"
 				fi
-
 				ln -sf "$file" "$target_file"
 				echo "Created symlink: $target_file -> $file"
 			fi
