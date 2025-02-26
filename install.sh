@@ -14,7 +14,7 @@ create_backup_dir() {
 
 # Function to create symbolic links
 create_symlinks() {
-	for file in "$DOTFILES_DIR"/*; do
+	for file in "$DOTFILES_DIR"/* "$DOTFILES_DIR"/.[!.]*; do
 		if [[ -f "$file" || -d "$file" ]]; then
 			filename=$(basename "$file")
 			# Check if the file should be excluded
