@@ -8,6 +8,11 @@ if command -v bat &> /dev/null; then
 	# Optional: Create cat alias for bat with specific options
 	alias cat="bat --paging=never"
   
-	# Optional: Set bat as the pager for man pages
-	export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+	# Optional: Set batman as the pager for man pages 
+	# (fallback to bat if batman is not instlled)
+	if command -v batman &> /dev/null; then
+		export MANPAGER="batman"
+	else
+		export MANPAGER="bat -l man -p'"
+	fi
 fi  
