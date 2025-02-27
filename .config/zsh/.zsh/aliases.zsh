@@ -11,7 +11,8 @@ if command -v bat &> /dev/null; then
 	# Optional: Set batman as the pager for man pages 
 	# (fallback to bat if batman is not instlled)
 	if command -v batman &> /dev/null; then
-		export MANPAGER="batman"
+		export MANPAGER="less -R"
+		alias man="batman"
 	else
 		export MANPAGER="bat -l man -p'"
 	fi
