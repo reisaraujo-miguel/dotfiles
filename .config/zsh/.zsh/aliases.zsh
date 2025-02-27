@@ -1,5 +1,8 @@
-alias ls="eza --icons auto"
 alias toolbox="SHELL=/bin/zsh toolbox"
+
+if command -v eza &> /dev/null; then
+	alias ls="eza --icons auto"
+fi
 
 if command -v bat &> /dev/null; then
 	export PAGER="bat --paging=always"
