@@ -5,3 +5,5 @@
 [user]
 	name = reisaraujo-miguel
 	email = reisaraujo.miguel@gmail.com
+[credential]
+        helper = !'/usr/local/bin/devpod' agent git-credentials --port 12049
