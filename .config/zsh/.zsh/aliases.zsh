@@ -10,6 +10,7 @@ if command -v bat &> /dev/null; then
   
 	# Optional: Create cat alias for bat with specific options
 	alias cat="bat --paging=never"
+	alias less="bat --paging=always"
   
 	# Optional: Set batman as the pager for man pages 
 	# (fallback to bat if batman is not instlled)
