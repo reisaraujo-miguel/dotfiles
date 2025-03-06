@@ -62,7 +62,7 @@ setopt AUTO_CD              # Auto changes to a directory without typing cd.
 # Variables
 #
 
-export ZSHCONFIG=${ZDOTDIR:-$HOME}/.zsh
+export ZSHCONFIG=${ZDOTDIR:-$HOME}/.zsh.d
 
 ZSH_THEME="spaceship"
 
