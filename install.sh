@@ -4,6 +4,21 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" # Use absolute path
 BACKUP_DIR="$DOTFILES_DIR/dotfiles_backup"                   # Backup directory for existing configs
 EXCLUDE_FILES=".git .gitignore .devcontainer.json"           # Files/dirs to exclude
 
+EXCLUDE_FLAG=false
+
+for arg in "$@"; do
+	if $EXCLUDE_FLAG; then
+		echo "Excluding $arg"
+		EXCLUDE_FILES="$EXCLUDE_FILES $arg"
+		EXCLUDE_FLAG=false
+		continue
+	fi
+
+	if [ "$arg" = "-e" ]; then
+		EXCLUDE_FLAG=true
+	fi
+done
+
 # Function to create backup directory if it doesn't exist
 create_backup_dir() {
 	if [ ! -d "$BACKUP_DIR" ]; then
