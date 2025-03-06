@@ -1,10 +1,20 @@
 #!/bin/bash
+
+HELP_TEXT="\
+Usage: ./install.sh [options]...
+Options:
+	-e \"file/dir\":		set file to be excluded from installation.
+	-d \"dir\":		set dir to install to.
+	-h, --help:		show this help dialog."
+
 # Configuration
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" # Use absolute path of script directory
-BACKUP_DIR="$DOTFILES_DIR/dotfiles_backup"                   # Backup directory for existing configs
-EXCLUDE_FILES=".git .gitignore .devcontainer.json"           # Files/dirs to exclude
+HOME_DIR=$HOME
+BACKUP_DIR="$DOTFILES_DIR/dotfiles_backup"         # Backup directory for existing configs
+EXCLUDE_FILES=".git .gitignore .devcontainer.json" # Files/dirs to exclude
 
 EXCLUDE_FLAG=false
+HOME_FLAG=false
 
 for arg in "$@"; do
 	if $EXCLUDE_FLAG; then
@@ -12,12 +22,35 @@ for arg in "$@"; do
 		EXCLUDE_FILES="$EXCLUDE_FILES $arg"
 		EXCLUDE_FLAG=false
 		continue
+	elif $HOME_FLAG; then
+		echo "Setting installation home as: $arg"
+		HOME_DIR=$arg
+		HOME_FLAG=false
+		continue
 	fi
 
 	if [ "$arg" = "-e" ]; then
 		EXCLUDE_FLAG=true
+	elif [ "$arg" = "-d" ]; then
+		HOME_FLAG=true
+	elif [ "$arg" = "-h" ] || [ "$arg" = "--help" ]; then
+		echo "$HELP_TEXT"
+		exit 0
+	else
+		echo "Invalid option: $arg"
+		exit 1
 	fi
 done
+
+if $HOME_FLAG; then
+	echo "You need to pass a value to -d. Usage: -d \"dir\""
+	exit 1
+fi
+
+if $EXCLUDE_FLAG; then
+	echo "You need to pass a value to -e. Usage: -e \"file/dir\""
+	exit 1
+fi
 
 # Function to create backup directory if it doesn't exist
 create_backup_dir() {
@@ -65,7 +98,7 @@ process_dotfiles() {
 				# Backup existing file
 				create_backup_dir
 				local backup_file
-				backup_file="$BACKUP_DIR/$(realpath --relative-to="$HOME" "$target_path").$(date +%Y%m%d_%H%M%S)"
+				backup_file="$BACKUP_DIR/$(realpath --relative-to="$HOME_DIR" "$target_path").$(date +%Y%m%d_%H%M%S)"
 				# Create parent directory for backup if needed
 				mkdir -p "$(dirname "$backup_file")"
 				mv "$target_path" "$backup_file"
@@ -93,7 +126,7 @@ process_hidden_root_files() {
 			continue
 		fi
 
-		local target_path="$HOME/$item_name"
+		local target_path="$HOME_DIR/$item_name"
 
 		if [ -d "$item" ]; then
 			# Handle directories: create them if they don't exist
@@ -126,10 +159,18 @@ process_hidden_root_files() {
 echo "Installing dotfiles..."
 process_hidden_root_files
 
-# check if there is a .bashrc file on the $HOME dir and add a line
+# Add git Configurations
+if command -v git &>/dev/null; then
+	echo "Configuring git"
+	git config --global core.pager "delta"
+	git config --global init.defaultBranch "main"
+fi
+
+# check if there is a .bashrc file on the $HOME_DIR and add a line
 # to replace the bash shell for a zsh shell
-if [ -f "$HOME"/.bashrc ]; then
-	cat "$DOTFILES_DIR"/bashrc_append.sh >>"$HOME"/.bashrc
+if [ -f "$HOME_DIR"/.bashrc ]; then
+	echo "Configuring .bashrc"
+	cat "$DOTFILES_DIR"/bashrc_append.sh >>"$HOME_DIR"/.bashrc
 fi
 
 echo "Dotfiles installation complete."
