@@ -23,15 +23,11 @@ for arg in "$@"; do
 		EXCLUDE_FLAG=false
 		continue
 	elif $HOME_FLAG; then
-		if [ -d "$HOME_DIR" ]; then
-			echo "Setting installation home as: $arg"
-			HOME_DIR=$arg
-			HOME_FLAG=false
-			continue
-		else
-			echo "Error: no $arg directory found."
-			exit 1
-		fi
+		echo "Setting installation home as: $arg"
+		HOME_DIR=$arg
+		HOME_FLAG=false
+		mkdir -p "$HOME_DIR"
+		continue
 	fi
 
 	if [ "$arg" = "-e" ]; then
