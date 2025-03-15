@@ -118,7 +118,7 @@ process_dotfiles() {
 			# Create symlink
 			if "$COPY_FLAG"; then
 				cp -r "$item" "$target_path"
-				echo "Copied file: $target_path -> $item"
+				echo "Copied file: $item ->	$target_path "
 			else
 				ln -sf "$item" "$target_path"
 				echo "Created symlink: $target_path -> $item"
@@ -166,7 +166,7 @@ process_hidden_root_files() {
 			# Create symlink
 			if "$COPY_FLAG"; then
 				cp -r "$item" "$target_path"
-				echo "Copied file: $target_path -> $item"
+				echo "Copied file: $item ->	$target_path "
 			else
 				ln -sf "$item" "$target_path"
 				echo "Created symlink: $target_path -> $item"
