@@ -5,6 +5,7 @@ Usage: ./install.sh [options]...
 Options:
 	-e \"file/dir\":		set file to be excluded from installation.
 	-d \"dir\":		set dir to install to.
+	-c:				copy files instead of creating symlinks.
 	-h, --help:		show this help dialog."
 
 # Configuration
@@ -15,6 +16,8 @@ EXCLUDE_FILES=".git .gitignore .devcontainer.json" # Files/dirs to exclude
 
 EXCLUDE_FLAG=false
 HOME_FLAG=false
+COPY_FLAG=false
+NO_BACKUP=false
 
 for arg in "$@"; do
 	if $EXCLUDE_FLAG; then
@@ -37,6 +40,10 @@ for arg in "$@"; do
 	elif [ "$arg" = "-h" ] || [ "$arg" = "--help" ]; then
 		echo "$HELP_TEXT"
 		exit 0
+	elif [ "$arg" = "-c" ]; then
+		COPY_FLAG=true
+	elif [ "$arg" = "--no-backup" ]; then
+		NO_BACKUP=true
 	else
 		echo "Invalid option: $arg"
 		exit 1
@@ -48,6 +55,8 @@ if $HOME_FLAG; then
 	exit 1
 fi
 
+HOME=$HOME_DIR
+
 if $EXCLUDE_FLAG; then
 	echo "You need to pass a value to -e. Usage: -e \"file/dir\""
 	exit 1
@@ -55,7 +64,7 @@ fi
 
 # Function to create backup directory if it doesn't exist
 create_backup_dir() {
-	if [ ! -d "$BACKUP_DIR" ]; then
+	if [ ! -d "$BACKUP_DIR" ] && [ ! "$NO_BACKUP"]; then
 		mkdir -p "$BACKUP_DIR"
 		echo "Created backup directory: $BACKUP_DIR"
 	fi
@@ -107,8 +116,13 @@ process_dotfiles() {
 			fi
 
 			# Create symlink
-			ln -sf "$item" "$target_path"
-			echo "Created symlink: $target_path -> $item"
+			if "$COPY_FLAG"; then
+				cp -r "$item" "$target_path"
+				echo "Copied file: $target_path -> $item"
+			else
+				ln -sf "$item" "$target_path"
+				echo "Created symlink: $target_path -> $item"
+			fi
 		fi
 	done
 }
@@ -150,8 +164,14 @@ process_hidden_root_files() {
 			fi
 
 			# Create symlink
-			ln -sf "$item" "$target_path"
-			echo "Created symlink: $target_path -> $item"
+			if "$COPY_FLAG"; then
+				cp -r "$item" "$target_path"
+				echo "Copied file: $target_path -> $item"
+			else
+				ln -sf "$item" "$target_path"
+				echo "Created symlink: $target_path -> $item"
+			fi
+
 		fi
 	done
 }
