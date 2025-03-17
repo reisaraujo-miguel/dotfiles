@@ -1,5 +1,5 @@
 [core]
-	pager = delta
+	pager = command -v delta && delta || less
 [init]
 	defaultBranch = main
 [user]
