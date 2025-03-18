@@ -36,7 +36,7 @@ fi
 if [ -d "$HOME/.deno" ]; then
     add_to_path "$HOME/.deno/bin"
 
-    [-s "$HOME/.deno/env" ] && source "$HOME/.deno/env"
+    [[-s "$HOME/.deno/env" ]] && source "$HOME/.deno/env"
 
 fi
 
@@ -57,7 +57,7 @@ fi
 if [ -d "$HOME/.cargo" ]; then
     add_to_path "$HOME/.cargo/bin"
    
-    [ -s "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
+    [[ -s "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 fi
 
 # Add flutter
