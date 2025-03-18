@@ -29,7 +29,7 @@ if [ -d "$HOME/.bun" ]; then
     add_to_path "$BUN_INSTALL/bin"
 
 	# bun completions
-	[ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"
+	[[ -s "$BUN_INSTALL/_bun" ]] && source "$BUN_INSTALL/_bun"
 fi
 
 # Add deno
