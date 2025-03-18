@@ -36,7 +36,7 @@ fi
 if [ -d "$HOME/.deno" ]; then
     add_to_path "$HOME/.deno/bin"
 
-    [[-s "$HOME/.deno/env" ]] && source "$HOME/.deno/env"
+    [[ -s "$HOME/.deno/env" ]] && source "$HOME/.deno/env"
 
 fi
 
