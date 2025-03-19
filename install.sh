@@ -187,11 +187,4 @@ if command -v git &>/dev/null; then
 	git config --global init.defaultBranch "main"
 fi
 
-# check if there is a .bashrc file on the $HOME_DIR and add a line
-# to replace the bash shell for a zsh shell
-if [ -f "$HOME_DIR"/.bashrc ]; then
-	echo "Configuring .bashrc"
-	cat "$DOTFILES_DIR"/bashrc_append.sh >>"$HOME_DIR"/.bashrc
-fi
-
 echo "Dotfiles installation complete."

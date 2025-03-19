@@ -1,3 +1,5 @@
+#!/bin/env zsh
+
 # Source autosuggestions if available
 SYSTEM_PACKAGE="/usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 BREW_PACKAGE="/home/linuxbrew/.linuxbrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
