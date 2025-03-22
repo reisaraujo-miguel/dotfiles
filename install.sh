@@ -183,7 +183,7 @@ process_hidden_root_files
 # Add git Configurations
 if command -v git &>/dev/null; then
 	echo "Configuring git"
-	git config --global core.pager "command -v delta && delta || less"
+	git config --global core.pager "command -v delta &>/dev/null && delta || less"
 	git config --global init.defaultBranch "main"
 fi
 
