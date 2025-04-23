@@ -223,3 +223,6 @@ if [ -d $ZSHCONFIG ]; then
       source "$f"
   done
 fi
+
+# bun completions
+[ -s "/var/home/guel/.bun/_bun" ] && source "/var/home/guel/.bun/_bun"

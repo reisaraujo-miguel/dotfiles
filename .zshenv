@@ -16,6 +16,18 @@ if [[ ("$SHLVL" -eq 1 && ! -o LOGIN) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; the
   source "${ZDOTDIR:-$HOME}/.zprofile"
 fi
 
+if [[ -d "/usr/lib/python3.13/site-packages/argcomplete/bash_completion.d" ]]; then
+  # Begin added by argcomplete
+  fpath=( /usr/lib/python3.13/site-packages/argcomplete/bash_completion.d "${fpath[@]}" )
+  # End added by argcomplete
+fi
+
+if [[ -d "/home/linuxbrew/.linuxbrew/share/zsh/site-functions" ]]; then
+  # Begin added by argcomplete
+  fpath=( /home/linuxbrew/.linuxbrew/share/zsh/site-functions "${fpath[@]}" )
+  # End added by argcomplete
+fi
+
 export PATH=$PATH:${HOME}/.bin
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -34,3 +46,4 @@ export ZDOTDIR="$HOME/.config/zsh"
 export HISTFILE="$XDG_DATA_HOME/zsh-history"
 export HISTSIZE=10000
 export SAVEHIST=10000
+. "$HOME/.cargo/env"

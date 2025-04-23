@@ -20,6 +20,12 @@ if npm -v &> /dev/null; then
 	add_to_path "$NPM_CONFIG_PREFIX/bin"
 fi
 
+# Add brew to path
+if [ -d /home/linuxbrew/.linuxbrew/bin/ ]; then
+    add_to_path /home/linuxbrew/.linuxbrew/bin
+    add_to_path /home/linuxbrew/.linuxbrew/sbin
+fi
+
 # Add my scripts to path
 if [ -d "$HOME/scripts" ]; then
     add_to_path "$HOME/scripts"
