@@ -11,13 +11,13 @@ add_to_path() {
 add_to_path "$HOME/.local/bin"
 
 # Configure npm
-if npm -v &> /dev/null; then
-	export NPM_CONFIG_PREFIX="$HOME/.npm-global"
-	mkdir -p "$NPM_CONFIG_PREFIX/lib" "$NPM_CONFIG_PREFIX/bin"
+if npm -v &>/dev/null; then
+    export NPM_CONFIG_PREFIX="$HOME/.npm-global"
+    mkdir -p "$NPM_CONFIG_PREFIX/lib" "$NPM_CONFIG_PREFIX/bin"
 
-	npm config set prefix "$NPM_CONFIG_PREFIX"
+    npm config set prefix "$NPM_CONFIG_PREFIX"
 
-	add_to_path "$NPM_CONFIG_PREFIX/bin"
+    add_to_path "$NPM_CONFIG_PREFIX/bin"
 fi
 
 # Add brew to path
@@ -36,8 +36,8 @@ if [ -d "$HOME/.bun" ]; then
     export BUN_INSTALL="$HOME/.bun"
     add_to_path "$BUN_INSTALL/bin"
 
-	# bun completions
-	[[ -s "$BUN_INSTALL/_bun" ]] && source "$BUN_INSTALL/_bun"
+    # bun completions
+    [[ -s "$BUN_INSTALL/_bun" ]] && source "$BUN_INSTALL/_bun"
 fi
 
 # Add deno
@@ -51,7 +51,7 @@ fi
 # Add android tools
 if [ -d "$HOME/Android/Sdk" ]; then
     export ANDROID_HOME="$HOME/Android/Sdk"
-    
+
     add_to_path "$ANDROID_HOME/emulator"
     add_to_path "$ANDROID_HOME/platform-tools"
 fi
@@ -64,7 +64,7 @@ fi
 # Add cargo
 if [ -d "$HOME/.cargo" ]; then
     add_to_path "$HOME/.cargo/bin"
-   
+
     [[ -s "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 fi
 
@@ -79,4 +79,3 @@ if [ -n "$GOPATH" ]; then
 fi
 
 export PATH
-

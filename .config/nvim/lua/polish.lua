@@ -21,3 +21,10 @@ vim.api.nvim_set_keymap("o", "k", "gk", { noremap = true, silent = true })
 vim.diagnostic.config { virtual_text = false }
 
 vim.opt.expandtab = false -- Use tabs instead of spaces
+
+-- keybindings to navigate buffers
+vim.keymap.set("n", "<leader>bn", ":bnext<CR>", { desc = "Next buffer" })
+vim.keymap.set("n", "<leader>bp", ":bprevious<CR>", { desc = "Previous buffer" })
+
+-- open buffer list on telescope
+vim.keymap.set("n", "<leader>bl", ":Telescope buffers<CR>", { desc = "Buffer list" })
