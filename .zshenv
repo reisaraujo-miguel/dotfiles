@@ -18,13 +18,13 @@ fi
 
 if [[ -d "/usr/lib/python3.13/site-packages/argcomplete/bash_completion.d" ]]; then
   # Begin added by argcomplete
-  fpath=( /usr/lib/python3.13/site-packages/argcomplete/bash_completion.d "${fpath[@]}" )
+  fpath=(/usr/lib/python3.13/site-packages/argcomplete/bash_completion.d "${fpath[@]}")
   # End added by argcomplete
 fi
 
 if [[ -d "/home/linuxbrew/.linuxbrew/share/zsh/site-functions" ]]; then
   # Begin added by argcomplete
-  fpath=( /home/linuxbrew/.linuxbrew/share/zsh/site-functions "${fpath[@]}" )
+  fpath=(/home/linuxbrew/.linuxbrew/share/zsh/site-functions "${fpath[@]}")
   # End added by argcomplete
 fi
 
@@ -46,4 +46,7 @@ export ZDOTDIR="$HOME/.config/zsh"
 export HISTFILE="$XDG_DATA_HOME/zsh-history"
 export HISTSIZE=10000
 export SAVEHIST=10000
-. "$HOME/.cargo/env"
+
+if [[ -d "$HOME/.cargo" ]]; then
+  . "$HOME/.cargo/env"
+fi
