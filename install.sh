@@ -64,121 +64,75 @@ fi
 
 # Function to create backup directory if it doesn't exist
 create_backup_dir() {
-	if [ ! -d "$BACKUP_DIR" ] && [ ! "$NO_BACKUP"]; then
+	if [ ! -d "$BACKUP_DIR" ] && [ ! "$NO_BACKUP" ]; then
 		mkdir -p "$BACKUP_DIR"
 		echo "Created backup directory: $BACKUP_DIR"
 	fi
 }
 
-# Function to recursively process files and directories
-process_dotfiles() {
-	local source_dir="$1"
-	local target_dir="$2"
-
-	# Process both regular and hidden files/directories (excluding . and ..)
-	for item in "$source_dir"/* "$source_dir"/.[!.]*; do
-		# Skip if the item doesn't exist (common when no hidden files are present)
-		[ ! -e "$item" ] && continue
-
-		# Get the basename of the item
-		local item_name
-		item_name=$(basename "$item")
-
-		# Skip excluded files/directories
-		if [[ " $EXCLUDE_FILES " =~ [[:space:]]"$item_name"[[:space:]] ]]; then
-			echo "Skipping excluded item: $item_name"
-			continue
-		fi
-
-		# Create the target path
-		local target_path="$target_dir/$item_name"
-
-		if [ -d "$item" ]; then
-			# Handle directories: create them if they don't exist
-			if [ ! -d "$target_path" ]; then
-				mkdir -p "$target_path"
-				echo "Created directory: $target_path"
-			fi
-
-			# Recursively process the contents of this directory
-			process_dotfiles "$item" "$target_path"
-		else
-			# Handle files: create symlinks
-			if [ -e "$target_path" ] || [ -L "$target_path" ]; then
-				# Backup existing file
-				create_backup_dir
-				local backup_file
-				backup_file="$BACKUP_DIR/$(realpath --relative-to="$HOME_DIR" "$target_path").$(date +%Y%m%d_%H%M%S)"
-				# Create parent directory for backup if needed
-				mkdir -p "$(dirname "$backup_file")"
-				mv "$target_path" "$backup_file"
-				echo "Backed up existing file: $target_path to $backup_file"
-			fi
-
-			# Create symlink
-			if "$COPY_FLAG"; then
-				cp -r "$item" "$target_path"
-				echo "Copied file: $item ->	$target_path "
-			else
-				ln -sf "$item" "$target_path"
-				echo "Created symlink: $target_path -> $item"
-			fi
-		fi
-	done
+# Function to backup existing file/dir
+backup_existing() {
+	local target_path="$1"
+	if [ -e "$target_path" ] || [ -L "$target_path" ]; then
+		create_backup_dir
+		local backup_file
+		backup_file="$BACKUP_DIR/$(basename "$target_path").$(date +%Y%m%d_%H%M%S)"
+		mv "$target_path" "$backup_file"
+		echo "Backed up existing file: $target_path to $backup_file"
+	fi
 }
 
-# Function to process hidden files/dirs in the root of DOTFILES_DIR
-process_hidden_root_files() {
-	for item in "$DOTFILES_DIR"/.[!.]*; do
-		[ ! -e "$item" ] && continue
-
-		local item_name
-		item_name=$(basename "$item")
-
-		# Skip excluded files/directories
-		if [[ " $EXCLUDE_FILES " =~ [[:space:]]"$item_name"[[:space:]] ]]; then
-			echo "Skipping excluded item: $item_name"
-			continue
-		fi
-
-		local target_path="$HOME_DIR/$item_name"
-
-		if [ -d "$item" ]; then
-			# Handle directories: create them if they don't exist
-			if [ ! -d "$target_path" ]; then
-				mkdir -p "$target_path"
-				echo "Created directory: $target_path"
-			fi
-
-			# Recursively process the contents of this directory
-			process_dotfiles "$item" "$target_path"
-		else
-			# Handle files: create symlinks
-			if [ -e "$target_path" ] || [ -L "$target_path" ]; then
-				# Backup existing file
-				create_backup_dir
-				local backup_file
-				backup_file="$BACKUP_DIR/$item_name.$(date +%Y%m%d_%H%M%S)"
-				mv "$target_path" "$backup_file"
-				echo "Backed up existing file: $target_path to $backup_file"
-			fi
-
-			# Create symlink
-			if "$COPY_FLAG"; then
-				cp -r "$item" "$target_path"
-				echo "Copied file: $item ->	$target_path "
-			else
-				ln -sf "$item" "$target_path"
-				echo "Created symlink: $target_path -> $item"
-			fi
-
-		fi
-	done
+# Function to symlink or copy a file/dir
+link_or_copy() {
+	local source="$1"
+	local target="$2"
+	if "$COPY_FLAG"; then
+		cp -r "$source" "$target"
+		echo "Copied: $source -> $target"
+	else
+		ln -sf "$source" "$target"
+		echo "Symlinked: $target -> $source"
+	fi
 }
 
-# Main execution
-echo "Installing dotfiles..."
-process_hidden_root_files
+# Process top-level dotfiles (non-recursive)
+echo "Processing top-level dotfiles..."
+for item in "$DOTFILES_DIR"/.[!.]* "$DOTFILES_DIR"/*; do
+	[ ! -e "$item" ] && continue
+
+	item_name=$(basename "$item")
+	if [[ " $EXCLUDE_FILES " =~ [[:space:]]"$item_name"[[:space:]] ]]; then
+		echo "Skipping excluded item: $item_name"
+		continue
+	fi
+
+	if [ -f "$item" ]; then
+		target_path="$HOME_DIR/$item_name"
+		backup_existing "$target_path"
+		link_or_copy "$item" "$target_path"
+	fi
+done
+
+# Process .config and .bashrc.d directories (non-recursive)
+echo "Processing .config and .bashrc.d directories..."
+for dir in ".config" ".bashrc.d"; do
+	source_dir="$DOTFILES_DIR/$dir"
+	target_dir="$HOME_DIR/$dir"
+
+	if [ -d "$source_dir" ]; then
+		mkdir -p "$target_dir"
+		echo "Created directory: $target_dir"
+
+		for item in "$source_dir"/*; do
+			[ ! -e "$item" ] && continue
+
+			item_name=$(basename "$item")
+			target_path="$target_dir/$item_name"
+			backup_existing "$target_path"
+			link_or_copy "$item" "$target_path"
+		done
+	fi
+done
 
 # Add git Configurations
 if command -v git &>/dev/null; then

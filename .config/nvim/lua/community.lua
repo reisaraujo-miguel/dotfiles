@@ -16,8 +16,9 @@ return {
   { import = "astrocommunity.utility.neodim" },
   { import = "astrocommunity.markdown-and-latex.markview-nvim" },
   { import = "astrocommunity.completion.copilot-lua-cmp" },
-  { import = "astrocommunity.editing-support.copilotchat-nvim" },
+  -- { import = "astrocommunity.editing-support.copilotchat-nvim" },
   { import = "astrocommunity.editing-support.conform-nvim" },
+  { import = "astrocommunity.completion.avante-nvim" },
 
   -- Language packs
   { import = "astrocommunity.pack.lua" },

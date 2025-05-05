@@ -28,3 +28,7 @@ vim.keymap.set("n", "<leader>bp", ":bprevious<CR>", { desc = "Previous buffer" }
 
 -- open buffer list on telescope
 vim.keymap.set("n", "<leader>bl", ":Telescope buffers<CR>", { desc = "Buffer list" })
+
+-- For avante
+-- views can only be fully collapsed with the global statusline
+vim.opt.laststatus = 3
