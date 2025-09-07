@@ -2,6 +2,8 @@ return {
   {
     "stevearc/conform.nvim",
     opts = function(_, opts)
+      opts.formatters_by_ft.java = { "clang-format" }
+
       -- Register custom formatters
       require("conform").formatters.gdformat3 = {
         command = "gdformat3",

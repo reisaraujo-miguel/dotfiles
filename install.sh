@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# install.sh --help output
 HELP_TEXT="\
 Usage: ./install.sh [options]...
 Options:
@@ -9,16 +10,18 @@ Options:
 	-h, --help:		show this help dialog."
 
 # Configuration
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" # Use absolute path of script directory
-HOME_DIR=$HOME
-BACKUP_DIR="$DOTFILES_DIR/dotfiles_backup"         # Backup directory for existing configs
-EXCLUDE_FILES=".git .gitignore .devcontainer.json" # Files/dirs to exclude
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" # Use the absolute path of the script directory
+HOME_DIR=$HOME                                               # Default installation directory
+BACKUP_DIR="$DOTFILES_DIR/dotfiles_backup"                   # Backup directory for existing configs
+EXCLUDE_FILES=".git .gitignore LICENSE README.md install.sh" # Files/dirs to exclude
 
+# Flag variables
 EXCLUDE_FLAG=false
 HOME_FLAG=false
 COPY_FLAG=false
 NO_BACKUP=false
 
+# Parse command-line arguments
 for arg in "$@"; do
 	if $EXCLUDE_FLAG; then
 		echo "Excluding $arg"
@@ -50,6 +53,7 @@ for arg in "$@"; do
 	fi
 done
 
+# Validate required arguments
 if $HOME_FLAG; then
 	echo "You need to pass a value to -d. Usage: -d \"dir\""
 	exit 1

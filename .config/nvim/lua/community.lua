@@ -16,9 +16,10 @@ return {
   { import = "astrocommunity.utility.neodim" },
   { import = "astrocommunity.markdown-and-latex.markview-nvim" },
   { import = "astrocommunity.completion.copilot-lua-cmp" },
-  -- { import = "astrocommunity.editing-support.copilotchat-nvim" },
   { import = "astrocommunity.editing-support.conform-nvim" },
   { import = "astrocommunity.completion.avante-nvim" },
+
+  { import = "astrocommunity.test.neotest" },
 
   -- Language packs
   { import = "astrocommunity.pack.lua" },
@@ -30,6 +31,13 @@ return {
   { import = "astrocommunity.pack.go" },
   { import = "astrocommunity.pack.docker" },
   { import = "astrocommunity.pack.typescript-all-in-one" },
+  { import = "astrocommunity.pack.html-css" },
   { import = "astrocommunity.pack.python" },
   { import = "astrocommunity.pack.php" },
+  { import = "astrocommunity.pack.java" },
+  { import = "astrocommunity.pack.toml" },
+  { import = "astrocommunity.pack.json" },
+  { import = "astrocommunity.pack.xml" },
+  { import = "astrocommunity.pack.yaml" },
+  { import = "astrocommunity.pack.sql" },
 }

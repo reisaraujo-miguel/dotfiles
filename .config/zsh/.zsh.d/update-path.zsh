@@ -11,7 +11,7 @@ add_to_path() {
 add_to_path "$HOME/.local/bin"
 
 # Configure npm
-if npm -v &>/dev/null; then
+if command -v npm &>/dev/null; then
     export NPM_CONFIG_PREFIX="$HOME/.npm-global"
     mkdir -p "$NPM_CONFIG_PREFIX/lib" "$NPM_CONFIG_PREFIX/bin"
 
@@ -32,7 +32,8 @@ if [ -d "$HOME/scripts" ]; then
 fi
 
 # Add bun
-if [ -d "$HOME/.bun" ]; then
+if command -v bun &>/dev/null; then
+    mkdir -p "$HOME/.bun/bin"
     export BUN_INSTALL="$HOME/.bun"
     add_to_path "$BUN_INSTALL/bin"
 
@@ -41,7 +42,8 @@ if [ -d "$HOME/.bun" ]; then
 fi
 
 # Add deno
-if [ -d "$HOME/.deno" ]; then
+if command -v deno &>/dev/null; then
+    mkdir -p "$HOME/.deno/bin"
     add_to_path "$HOME/.deno/bin"
 
     [[ -s "$HOME/.deno/env" ]] && source "$HOME/.deno/env"
@@ -62,19 +64,21 @@ if [ -d "$HOME/.local/kitty.app" ]; then
 fi
 
 # Add cargo
-if [ -d "$HOME/.cargo" ]; then
+if command -v cargo &>/dev/null; then
+    mkdir -p "$HOME/.cargo/bin"
     add_to_path "$HOME/.cargo/bin"
 
     [[ -s "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 fi
 
 # Add flutter
-if [ -d "$HOME/.flutter" ]; then
+if command -v flutter &>/dev/null; then
+    mkdir -p "$HOME/.flutter/bin"
     add_to_path "$HOME/.flutter/bin"
 fi
 
 # Add golang
-if [ -n "$GOPATH" ]; then
+if command -v go &>/dev/null; then
     add_to_path "$GOPATH/bin"
 fi
 

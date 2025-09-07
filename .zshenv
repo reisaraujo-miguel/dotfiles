@@ -1,5 +1,8 @@
 #!/usr/bin/env zsh
 
+#configure bitwarden ssh
+export SSH_AUTH_SOCK=$HOME/.bitwarden-ssh-agent.sock
+
 export SHELL=/bin/zsh
 
 # https://blog.patshead.com/2011/04/improve-your-oh-my-zsh-startup-time-maybe.html
@@ -28,6 +31,10 @@ if [[ -d "/home/linuxbrew/.linuxbrew/share/zsh/site-functions" ]]; then
   # End added by argcomplete
 fi
 
+if [[ -f "$HOME/.makepkg.conf" ]]; then
+  export MAKEPKG_CONF="$HOME/.makepkg.conf"
+fi
+
 export PATH=$PATH:${HOME}/.bin
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -47,6 +54,6 @@ export HISTFILE="$XDG_DATA_HOME/zsh-history"
 export HISTSIZE=10000
 export SAVEHIST=10000
 
-if [[ -d "$HOME/.cargo" ]]; then
+if [[ -d "$HOME/.cargo/env" ]]; then
   . "$HOME/.cargo/env"
 fi

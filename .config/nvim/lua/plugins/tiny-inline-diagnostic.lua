@@ -1,6 +1,6 @@
 return {
   {
-    "tiny-inline-diagnostic.nvim",
+    "rachartier/tiny-inline-diagnostic.nvim",
     opts = {
       preset = "simple",
       options = {

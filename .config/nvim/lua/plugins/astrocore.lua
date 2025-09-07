@@ -19,7 +19,8 @@ return {
     },
     -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
     diagnostics = {
-      virtual_text = true,
+      -- disable virtual text for tiny-inline diagnostics
+      virtual_text = false,
       underline = true,
     },
     -- vim options can be configured here
@@ -27,9 +28,15 @@ return {
       opt = { -- vim.opt.<key>
         relativenumber = false, -- sets vim.opt.relativenumber
         number = true, -- sets vim.opt.number
-        spell = false, -- sets vim.opt.spell
+        spell = true, -- sets vim.opt.spell
+        spelllang = { "en", "pt" },
+        spellfile = vim.fn.stdpath "config" .. "/spell/en.utf-8.add,pt.utf-8.add",
         signcolumn = "yes", -- sets vim.opt.signcolumn to yes
         wrap = true, -- sets vim.opt.wrap
+        expandtab = false, -- Use tabs instead of spaces
+        -- For avante
+        -- views can only be fully collapsed with the global statusline
+        laststatus = 3,
       },
       g = { -- vim.g.<key>
         -- configure global vim variables (vim.g)
@@ -58,12 +65,35 @@ return {
           desc = "Close buffer from tabline",
         },
 
+        -- open buffer list on telescope
+        ["<Leader>bl"] = { ":Telescope buffers<CR>", desc = "Buffer list" },
+
+        -- Move by visual lines instead of logical ones
+        ["<Down>"] = "gj",
+        ["<Up>"] = "gk",
+        ["j"] = "gj",
+        ["k"] = "gk",
+
         -- tables with just a `desc` key will be registered with which-key if it's installed
         -- this is useful for naming menus
         -- ["<Leader>b"] = { desc = "Buffers" },
 
         -- setting a mapping to false will disable it
         -- ["<C-S>"] = false,
+      },
+      v = {
+        -- Move by visual lines instead of logical ones
+        ["<Down>"] = "gj",
+        ["<Up>"] = "gk",
+        ["j"] = "gj",
+        ["k"] = "gk",
+      },
+      o = {
+        -- Move by visual lines instead of logical ones
+        ["<Down>"] = "gj",
+        ["<Up>"] = "gk",
+        ["j"] = "gj",
+        ["k"] = "gk",
       },
     },
   },
