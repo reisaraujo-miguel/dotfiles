@@ -1,48 +1,25 @@
--- Customize Mason plugins
+-- Customize Mason
 
 ---@type LazySpec
 return {
-  -- use mason-lspconfig to configure LSP installations
+  -- use mason-tool-installer for automatically installing Mason packages
   {
-    "williamboman/mason-lspconfig.nvim",
-    -- overrides `require("mason-lspconfig").setup(...)`
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    -- overrides `require("mason-tool-installer").setup(...)`
     opts = {
+      -- Make sure to use the names found in `:Mason`
       ensure_installed = {
-        "lua_ls",
-        -- add more arguments for adding more language servers
-      },
-    },
-  },
-  -- use mason-null-ls to configure Formatters/Linter installation for null-ls sources
-  {
-    "jay-babu/mason-null-ls.nvim",
-    -- overrides `require("mason-null-ls").setup(...)`
-    opts = {
-      ensure_installed = {
-        "stylua",
-        -- add more arguments for adding more null-ls sources
-      },
+        -- install language servers
+        "lua-language-server",
 
-      handlers = {
-        sqlfluff = function()
-          local null_ls = require "null-ls"
-          null_ls.register(null_ls.builtins.diagnostics.sqlfluff.with {
-            extra_args = { "--dialect", "postgres" },
-          })
-          null_ls.register(null_ls.builtins.formatting.sqlfluff.with {
-            extra_args = { "--dialect", "postgres" },
-          })
-        end,
-      },
-    },
-  },
-  {
-    "jay-babu/mason-nvim-dap.nvim",
-    -- overrides `require("mason-nvim-dap").setup(...)`
-    opts = {
-      ensure_installed = {
-        "python",
-        -- add more arguments for adding more debuggers
+        -- install formatters
+        "stylua",
+
+        -- install debuggers
+        "debugpy",
+
+        -- install any other package
+        "tree-sitter-cli",
       },
     },
   },

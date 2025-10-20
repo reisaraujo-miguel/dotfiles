@@ -1,9 +1,14 @@
 #!/usr/bin/env zsh
 
-#configure bitwarden ssh
-export SSH_AUTH_SOCK=$HOME/.bitwarden-ssh-agent.sock
+# configure bitwarden ssh
+BITWARDEN_NATIVE_SOCK="$HOME/.bitwarden-ssh-agent.sock"
+BITWARDEN_FLATPAK_SOCK="$HOME/.var/app/com.bitwarden.desktop/data/.bitwarden-ssh-agent.sock"
 
-export SHELL=/bin/zsh
+if [[ -r "$BITWARDEN_NATIVE_SOCK" ]]; then
+  export SSH_AUTH_SOCK="$BITWARDEN_NATIVE_SOCK"
+elif [[ -r "$BITWARDEN_FLATPAK_SOCK" ]]; then
+  export SSH_AUTH_SOCK="$BITWARDEN_FLATPAK_SOCK"
+fi
 
 # https://blog.patshead.com/2011/04/improve-your-oh-my-zsh-startup-time-maybe.html
 skip_global_compinit=1

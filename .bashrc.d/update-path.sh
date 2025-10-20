@@ -12,10 +12,8 @@ add_to_path "$HOME/.local/bin"
 
 # Configure npm
 if npm -v &>/dev/null; then
-	export NPM_CONFIG_PREFIX="$HOME/.npm-global"
+	NPM_CONFIG_PREFIX="$HOME/.npm-global"
 	mkdir -p "$NPM_CONFIG_PREFIX/lib" "$NPM_CONFIG_PREFIX/bin"
-
-	npm config set prefix "$NPM_CONFIG_PREFIX"
 
 	add_to_path "$NPM_CONFIG_PREFIX/bin"
 fi

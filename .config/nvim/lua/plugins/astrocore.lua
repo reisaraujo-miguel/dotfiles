@@ -1,3 +1,4 @@
+
 -- AstroCore provides a central place to modify mappings, vim options, autocommands, and more!
 -- Configuration documentation can be found with `:h astrocore`
 -- NOTE: We highly recommend setting up the Lua Language Server (`:LspInstall lua_ls`)
@@ -13,15 +14,27 @@ return {
       large_buf = { size = 1024 * 256, lines = 10000 }, -- set global limits for large files for disabling features like treesitter
       autopairs = true, -- enable autopairs at start
       cmp = true, -- enable completion at start
-      diagnostics_mode = 3, -- diagnostic mode on start (0 = off, 1 = no signs/virtual text, 2 = no virtual text, 3 = on)
+      diagnostics = { virtual_text = true, virtual_lines = false }, -- diagnostic settings on startup
       highlighturl = true, -- highlight URLs at start
       notifications = true, -- enable notifications at start
     },
     -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
     diagnostics = {
-      -- disable virtual text for tiny-inline diagnostics
-      virtual_text = false,
+      virtual_text = true,
       underline = true,
+    },
+    -- passed to `vim.filetype.add`
+    filetypes = {
+      -- see `:h vim.filetype.add` for usage
+      extension = {
+        foo = "fooscript",
+      },
+      filename = {
+        [".foorc"] = "fooscript",
+      },
+      pattern = {
+        [".*/etc/foo/.*"] = "fooscript",
+      },
     },
     -- vim options can be configured here
     options = {
@@ -29,14 +42,11 @@ return {
         relativenumber = false, -- sets vim.opt.relativenumber
         number = true, -- sets vim.opt.number
         spell = true, -- sets vim.opt.spell
-        spelllang = { "en", "pt" },
+	spelllang = { "en", "pt" },
         spellfile = vim.fn.stdpath "config" .. "/spell/en.utf-8.add,pt.utf-8.add",
         signcolumn = "yes", -- sets vim.opt.signcolumn to yes
         wrap = true, -- sets vim.opt.wrap
-        expandtab = false, -- Use tabs instead of spaces
-        -- For avante
-        -- views can only be fully collapsed with the global statusline
-        laststatus = 3,
+	laststatus = 3,
       },
       g = { -- vim.g.<key>
         -- configure global vim variables (vim.g)
@@ -65,14 +75,12 @@ return {
           desc = "Close buffer from tabline",
         },
 
-        -- open buffer list on telescope
-        ["<Leader>bl"] = { ":Telescope buffers<CR>", desc = "Buffer list" },
-
-        -- Move by visual lines instead of logical ones
+	-- Move by visual lines instead of logical ones
         ["<Down>"] = "gj",
         ["<Up>"] = "gk",
         ["j"] = "gj",
         ["k"] = "gk",
+
 
         -- tables with just a `desc` key will be registered with which-key if it's installed
         -- this is useful for naming menus

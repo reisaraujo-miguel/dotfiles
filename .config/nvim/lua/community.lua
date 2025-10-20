@@ -8,15 +8,10 @@ return {
   -- import/override with your plugins folder
 
   { import = "astrocommunity.colorscheme.catppuccin" },
-  { import = "astrocommunity.diagnostics.tiny-inline-diagnostic-nvim" },
   { import = "astrocommunity.bars-and-lines.vim-illuminate" },
-  { import = "astrocommunity.color.nvim-highlight-colors" },
-  { import = "astrocommunity.file-explorer.telescope-file-browser-nvim" },
-  { import = "astrocommunity.utility.hover-nvim" },
   { import = "astrocommunity.utility.neodim" },
   { import = "astrocommunity.markdown-and-latex.markview-nvim" },
   { import = "astrocommunity.completion.copilot-lua-cmp" },
-  { import = "astrocommunity.editing-support.conform-nvim" },
   { import = "astrocommunity.completion.avante-nvim" },
 
   { import = "astrocommunity.test.neotest" },
@@ -29,7 +24,6 @@ return {
   { import = "astrocommunity.pack.cpp" },
   { import = "astrocommunity.pack.cmake" },
   { import = "astrocommunity.pack.go" },
-  { import = "astrocommunity.pack.docker" },
   { import = "astrocommunity.pack.typescript-all-in-one" },
   { import = "astrocommunity.pack.html-css" },
   { import = "astrocommunity.pack.python" },
