@@ -19,7 +19,7 @@ if command -v bat &>/dev/null; then
 	export BAT_PAGER="less -R"
 
 	# Optional: Create cat alias for bat with specific options
-	alias cat="bat --paging=never --style=header,grid,snip"
+	alias cat="bat --paging=never --style=snip"
 	alias less="bat --paging=always --style=auto"
 
 	# Optional: Set batman as the pager for man pages

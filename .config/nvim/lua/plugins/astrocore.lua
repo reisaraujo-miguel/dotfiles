@@ -1,4 +1,3 @@
-
 -- AstroCore provides a central place to modify mappings, vim options, autocommands, and more!
 -- Configuration documentation can be found with `:h astrocore`
 -- NOTE: We highly recommend setting up the Lua Language Server (`:LspInstall lua_ls`)
@@ -42,11 +41,11 @@ return {
         relativenumber = false, -- sets vim.opt.relativenumber
         number = true, -- sets vim.opt.number
         spell = true, -- sets vim.opt.spell
-	spelllang = { "en", "pt" },
+        spelllang = { "en", "pt" },
         spellfile = vim.fn.stdpath "config" .. "/spell/en.utf-8.add,pt.utf-8.add",
         signcolumn = "yes", -- sets vim.opt.signcolumn to yes
         wrap = true, -- sets vim.opt.wrap
-	laststatus = 3,
+        laststatus = 3,
       },
       g = { -- vim.g.<key>
         -- configure global vim variables (vim.g)
@@ -75,12 +74,11 @@ return {
           desc = "Close buffer from tabline",
         },
 
-	-- Move by visual lines instead of logical ones
+        -- Move by visual lines instead of logical ones
         ["<Down>"] = "gj",
         ["<Up>"] = "gk",
         ["j"] = "gj",
         ["k"] = "gk",
-
 
         -- tables with just a `desc` key will be registered with which-key if it's installed
         -- this is useful for naming menus
