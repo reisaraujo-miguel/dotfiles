@@ -141,6 +141,19 @@ done
 # Add git Configurations
 if command -v git &>/dev/null; then
 	echo "Configuring git"
+
+	if [[ ! -e "$HOME/.gitconfig" ]]; then
+		read -rp "Set git credentials? [y/n]: " SET_CREDENTIALS
+	fi
+
+	if [[ "$SET_CREDENTIALS" == "y" ]]; then
+		read -rp "User email: " GIT_EMAIL
+		read -rp "User name: " GIT_NAME
+
+		git config --global user.email "$GIT_EMAIL"
+		git config --global user.name "$GIT_NAME"
+	fi
+
 	git config --global core.pager "command -v delta &>/dev/null && delta || less"
 	git config --global init.defaultBranch "main"
 fi
