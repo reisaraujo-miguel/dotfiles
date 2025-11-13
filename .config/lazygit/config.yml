@@ -19,15 +19,11 @@ gui:
       - "#cad3f5"
     searchingActiveBorderColor:
       - "#eed49f"
-
   authorColors:
     "*": "#b7bdf8"
-
   nerdFontsVersion: "3"
-
 git:
-  paging:
-    pager: delta --dark --paging=never
-
+  pagers:
+    - pager: delta --dark --paging=never
 os:
   editPreset: "nvim"
