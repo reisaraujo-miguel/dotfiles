@@ -1,4 +1,4 @@
-font-family = "Fira Code"
-font-size = "11"
-theme = "cyberdream"
+font-family = "FiraCode Nerd Font"
+font-size = "10"
+theme = "catppuccin-mocha"
 command = "zsh"

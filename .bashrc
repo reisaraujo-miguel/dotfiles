@@ -1,5 +1,15 @@
 # .bashrc
 
+# configure bitwarden ssh
+BITWARDEN_NATIVE_SOCK="$HOME/.bitwarden-ssh-agent.sock"
+BITWARDEN_FLATPAK_SOCK="$HOME/.var/app/com.bitwarden.desktop/data/.bitwarden-ssh-agent.sock"
+
+if [[ -r "$BITWARDEN_NATIVE_SOCK" ]]; then
+	export SSH_AUTH_SOCK="$BITWARDEN_NATIVE_SOCK"
+elif [[ -r "$BITWARDEN_FLATPAK_SOCK" ]]; then
+	export SSH_AUTH_SOCK="$BITWARDEN_FLATPAK_SOCK"
+fi
+
 export QT_QPA_PLATFORM=wayland
 export XDG_DATA_HOME=${XDG_DATA_HOME:="$HOME/.local/share"} && mkdir -p "$XDG_DATA_HOME"
 export XDG_CACHE_HOME=${XDG_CACHE_HOME:="$HOME/.cache"} && mkdir -p "$XDG_CACHE_HOME"
