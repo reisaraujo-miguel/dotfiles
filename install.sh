@@ -159,18 +159,43 @@ if command -v git &>/dev/null; then
 	git config --global init.defaultBranch "main"
 fi
 
+append_if_missing() {
+	local file="$1"
+	local line="$2"
+
+	# grep -qF means: Quiet (no output), Fixed string (no regex interpretation)
+	if ! grep -qF "$line" "$file"; then
+		echo "$line" | sudo tee -a "$file" >/dev/null
+		echo "  [ADDED] $line"
+	else
+		echo "  [SKIP] Already exists in $file"
+	fi
+}
+
 read -rp "Increase global maximum shader cache size to 12G? [y/n]: " INCREASE_SHADER_CACHE
 
 if [[ "$INCREASE_SHADER_CACHE" == "y" ]]; then
-	cat <<-EOF | sudo tee -a /etc/environment >/dev/null
-		# Nvidia
-		__GL_SHADER_DISK_CACHE_SIZE=12000000000
-		# AMD
-		AMD_VULKAN_ICD=RADV
-		MESA_SHADER_CACHE_MAX_SIZE=12G
-	EOF
+	append_if_missing "/etc/environment" "__GL_SHADER_DISK_CACHE_SIZE=12000000000"
+	append_if_missing "/etc/environment" "AMD_VULKAN_ICD=RADV"
+	append_if_missing "/etc/environment" "MESA_SHADER_CACHE_MAX_SIZE=12G"
 
 	echo "Global maximum shader cache size increased, restart system to take effect."
+fi
+
+read -rp "Apply kernel parameters to match SteamOS (improves stability in some games)? [y/n]: " INCREASE_MAP_COUNT
+
+if [[ "$INCREASE_MAP_COUNT" == "y" ]]; then
+	cat <<-EOF | sudo tee /etc/sysctl.d/10-steam-map-count.conf >/dev/null
+		vm.max_map_count=2147483642
+		fs.file-max=2097152
+		vm.swappiness=1
+	EOF
+	echo "  [OK] Sysctl config file refreshed."
+
+	append_if_missing "/etc/security/limits.conf" "* hard nofile 1048576"
+	append_if_missing "/etc/security/limits.conf" "* soft nofile 1048576"
+
+	echo "Parameters applied, restart to take effect."
 fi
 
 echo "Dotfiles installation complete."
