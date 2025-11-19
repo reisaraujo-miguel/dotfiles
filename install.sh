@@ -10,10 +10,10 @@ Options:
 	-h, --help:		show this help dialog."
 
 # Configuration
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" # Use the absolute path of the script directory
-HOME_DIR=$HOME                                               # Default installation directory
-BACKUP_DIR="$DOTFILES_DIR/dotfiles_backup"                   # Backup directory for existing configs
-EXCLUDE_FILES=".git .gitignore LICENSE README.md install.sh" # Files/dirs to exclude
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"               # Use the absolute path of the script directory
+HOME_DIR=$HOME                                                             # Default installation directory
+BACKUP_DIR="$DOTFILES_DIR/dotfiles_backup/dotfiles.$(date +%Y%m%d_%H%M%S)" # Backup directory for existing configs
+EXCLUDE_FILES=".git .gitignore LICENSE README.md install.sh"               # Files/dirs to exclude
 
 # Flag variables
 EXCLUDE_FLAG=false
@@ -66,21 +66,23 @@ if $EXCLUDE_FLAG; then
 	exit 1
 fi
 
-# Function to create backup directory if it doesn't exist
-create_backup_dir() {
-	if [ ! -d "$BACKUP_DIR" ] && [ ! "$NO_BACKUP" ]; then
-		mkdir -p "$BACKUP_DIR"
-		echo "Created backup directory: $BACKUP_DIR"
-	fi
-}
+# create backup directory if it doesn't exist
+if [ ! -d "$BACKUP_DIR" ] && [ ! "$NO_BACKUP" ]; then
+	mkdir -p "$BACKUP_DIR"
+	echo "Created backup directory: $BACKUP_DIR"
+fi
 
 # Function to backup existing file/dir
 backup_existing() {
 	local target_path="$1"
-	if [ -e "$target_path" ] || [ -L "$target_path" ]; then
-		create_backup_dir
+
+	if [[ -L "$target_path" ]]; then
+		return
+	fi
+
+	if [[ -f "$target_path" ]] || [[ -d "$target_path" ]]; then
 		local backup_file
-		backup_file="$BACKUP_DIR/$(basename "$target_path").$(date +%Y%m%d_%H%M%S)"
+		backup_file="$BACKUP_DIR/$(basename "$target_path")"
 		mv "$target_path" "$backup_file"
 		echo "Backed up existing file: $target_path to $backup_file"
 	fi
@@ -117,26 +119,25 @@ for item in "$DOTFILES_DIR"/.[!.]* "$DOTFILES_DIR"/*; do
 	fi
 done
 
-# Process .config and .bashrc.d directories (non-recursive)
-echo "Processing .config and .bashrc.d directories..."
-for dir in ".config" ".bashrc.d"; do
-	source_dir="$DOTFILES_DIR/$dir"
-	target_dir="$HOME_DIR/$dir"
+# Process .config directory (non-recursive)
+echo "Processing .config directory..."
+dir=".config"
+source_dir="$DOTFILES_DIR/$dir"
+target_dir="$HOME_DIR/$dir"
 
-	if [ -d "$source_dir" ]; then
-		mkdir -p "$target_dir"
-		echo "Created directory: $target_dir"
+if [ -d "$source_dir" ]; then
+	mkdir -p "$target_dir"
+	echo "Created directory: $target_dir"
 
-		for item in "$source_dir"/*; do
-			[ ! -e "$item" ] && continue
+	for item in "$source_dir"/*; do
+		[ ! -e "$item" ] && continue
 
-			item_name=$(basename "$item")
-			target_path="$target_dir/$item_name"
-			backup_existing "$target_path"
-			link_or_copy "$item" "$target_path"
-		done
-	fi
-done
+		item_name=$(basename "$item")
+		target_path="$target_dir/$item_name"
+		backup_existing "$target_path"
+		link_or_copy "$item" "$target_path"
+	done
+fi
 
 # Add git Configurations
 if command -v git &>/dev/null; then
@@ -156,6 +157,20 @@ if command -v git &>/dev/null; then
 
 	git config --global core.pager "command -v delta &>/dev/null && delta || less"
 	git config --global init.defaultBranch "main"
+fi
+
+read -rp "Increase global maximum shader cache size to 12G? [y/n]: " INCREASE_SHADER_CACHE
+
+if [[ "$INCREASE_SHADER_CACHE" == "y" ]]; then
+	cat <<-EOF | sudo tee -a /etc/environment >/dev/null
+		# Nvidia
+		__GL_SHADER_DISK_CACHE_SIZE=12000000000
+		# AMD
+		AMD_VULKAN_ICD=RADV
+		MESA_SHADER_CACHE_MAX_SIZE=12G
+	EOF
+
+	echo "Global maximum shader cache size increased, restart system to take effect."
 fi
 
 echo "Dotfiles installation complete."
