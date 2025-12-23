@@ -1,0 +1,216 @@
+# ---------------------------------------------------------
+# SAFETY & SECURITY
+# ---------------------------------------------------------
+id: no-unsafe-strcpy
+message: "Avoid using 'strcpy'. Use 'strncpy', 'strlcpy', or 'std::string' instead to prevent buffer overflows."
+severity: error
+language: c
+rule:
+  pattern: strcpy($DST, $SRC)
+---
+id: no-unsafe-strcat
+message: "Avoid using 'strcat'. Use 'strncat' instead to prevent buffer overflows."
+severity: error
+language: c
+rule:
+  pattern: strcat($DST, $SRC)
+---
+id: no-unsafe-gets
+message: "Never use 'gets()'. Use 'fgets()' instead as 'gets()' is inherently unsafe."
+severity: error
+language: c
+rule:
+  pattern: gets($A)
+---
+id: no-unsafe-scanf
+message: "Avoid using plain 'scanf()'. Use 'scanf()' with width specifiers or safer alternatives."
+severity: warning
+language: c
+rule:
+  pattern: scanf($FMT, $ARG)
+---
+id: banned-c-functions
+message: "This function is marked as unsafe or banned."
+severity: error
+language: cpp
+rule:
+  any:
+    - pattern: gets($A)
+    - pattern: system($A)
+    - pattern: sprintf($A, $B, $$$)
+---
+# ---------------------------------------------------------
+# MODERN C++ STANDARDS
+# ---------------------------------------------------------
+id: use-nullptr
+message: "Use 'nullptr' instead of 'NULL' for type safety in Modern C++."
+severity: warning
+language: cpp
+rule:
+  pattern: "NULL"
+fix: nullptr
+---
+id: prefer-make-unique
+message: "Use 'std::make_unique<T>(...)' instead of 'std::unique_ptr<T>(new T(...))' for exception safety."
+severity: warning
+language: cpp
+rule:
+  pattern: std::unique_ptr<$TYPE>(new $TYPE($$$ARGS))
+fix: std::make_unique<$TYPE>($$$ARGS)
+---
+id: no-redundant-virtual
+message: "Do not use 'virtual' when 'override' is present."
+severity: hint
+language: cpp
+rule:
+  pattern: virtual $RET $NAME($$$) override { $$$ }
+  # Note: Automatic fix for this one is complex; manual review recommended.
+---
+# ---------------------------------------------------------
+# CODE QUALITY & LOGIC
+# ---------------------------------------------------------
+id: no-empty-catch
+message: "Do not leave catch blocks empty. Handle the exception or log it."
+severity: warning
+language: cpp
+rule:
+  pattern: |
+    catch (...) {
+    }
+---
+id: assignment-in-condition
+message: "Assignment detected inside condition. Did you mean '=='?"
+severity: warning
+language: cpp
+rule:
+  kind: if_statement
+  has:
+    field: condition
+    kind: assignment_expression
+---
+id: simplify-bool-comparison
+message: "Avoid explicit comparison to boolean literals."
+severity: info
+language: cpp
+rule:
+  any:
+    - pattern: $VAR == true
+    - pattern: $VAR == false
+    - pattern: $VAR != true
+    - pattern: $VAR != false
+---
+id: malloc-without-check
+message: "Check return value of 'malloc' as it can return NULL on failure."
+severity: warning
+language: c
+rule:
+  pattern: malloc($SIZE)
+  not:
+    inside:
+      kind: if_statement
+---
+id: prefer-smart-pointers
+message: "Prefer smart pointers (std::unique_ptr, std::shared_ptr) over raw pointers for ownership."
+severity: warning
+language: cpp
+rule:
+  pattern: $TYPE* $NAME = new $TYPE($$$)
+---
+id: no-c-style-cast
+message: "Avoid C-style casts. Use static_cast, dynamic_cast, const_cast, or reinterpret_cast instead."
+severity: warning
+language: cpp
+rule:
+  pattern: ($TYPE)$EXPR
+---
+id: no-throw-in-destructor
+message: "Avoid throwing exceptions in destructors."
+severity: warning
+language: cpp
+rule:
+  pattern: throw $EXPR
+  inside:
+    pattern: ~$CLASS() { $$$ }
+---
+id: no-except-specification
+message: "Avoid dynamic exception specifications (throw(...)). Use noexcept instead."
+severity: warning
+language: cpp
+rule:
+  pattern: throw($$$)
+---
+id: use-auto
+message: "Consider using 'auto' for complex type names or iterator types."
+severity: hint
+language: cpp
+rule:
+  pattern: std::[$TYPE]<$TEMPLATE>::iterator $NAME = $EXPR.begin()
+fix: auto $NAME = $EXPR.begin()
+---
+id: no-raw-loop
+message: "Prefer algorithms (std::for_each, std::transform, etc.) over raw loops."
+severity: hint
+language: cpp
+rule:
+  pattern: |
+    for ($TYPE $VAR = $START; $VAR < $END; ++$VAR) {
+      $BODY
+    }
+---
+id: use-const-references
+message: "Use const references for function parameters that are not modified."
+severity: hint
+language: cpp
+rule:
+  pattern: void $NAME($TYPE $PARAM)
+  not:
+    inside:
+      kind: template_declaration
+---
+id: no-global-variables
+message: "Avoid global variables. Use static class members or local variables instead."
+severity: warning
+language: cpp
+rule:
+  pattern: $TYPE $NAME = $EXPR;
+  inside:
+    kind: translation_unit
+  not:
+    inside:
+      kind: namespace_definition
+---
+id: missing-default-case
+message: "Switch statement should have a default case."
+severity: warning
+language: cpp
+rule:
+  pattern: switch ($EXPR) { $$$ }
+  not:
+    has:
+      pattern: "default:"
+---
+id: no-goto
+message: "Avoid using 'goto' statement."
+severity: warning
+language: c
+rule:
+  pattern: goto $LABEL;
+---
+id: no-multiple-returns
+message: "Avoid multiple return statements in a function. Consider early returns or restructuring."
+severity: hint
+language: cpp
+rule:
+  pattern: return $EXPR;
+  inside:
+    kind: function_definition
+---
+id: prefer-constexpr
+message: "Prefer 'constexpr' for compile-time constants."
+severity: hint
+language: cpp
+rule:
+  pattern: const $TYPE $NAME = $EXPR;
+  not:
+    inside:
+      kind: function_definition

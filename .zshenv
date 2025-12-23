@@ -40,6 +40,16 @@ if [[ -f "$HOME/.makepkg.conf" ]]; then
   export MAKEPKG_CONF="$HOME/.makepkg.conf"
 fi
 
+declare -a editors=("nvim" "vim" "nano" "vi")
+
+for editor in "${editors[@]}"; do
+  if command -v "$editor" >/dev/null 2>&1; then
+    export EDITOR="$editor"
+    export VISUAL="$editor"
+    break
+  fi
+done
+
 export PATH=$PATH:${HOME}/.bin
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 

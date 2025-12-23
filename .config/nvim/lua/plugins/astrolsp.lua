@@ -52,6 +52,24 @@ return {
       -- the key is the server that is being setup with `lspconfig`
       -- rust_analyzer = false, -- setting a handler to false will disable the set up of that language server
       -- pyright = function(_, opts) require("lspconfig").pyright.setup(opts) end -- or a custom handler function can be passed
+      ast_grep = function(server, opts)
+        -- Merge custom options with default options
+        opts = vim.tbl_deep_extend("force", opts, {
+          -- Force the LSP to use your global config file
+          cmd = { "ast-grep", "lsp", "-c", "/home/guel/.config/ast-grep/sgconfig.yml" },
+
+          -- 1. Attach to any project with a .git folder or package.json
+          -- 2. Fallback to the current directory if neither is found
+          root_dir = function(fname)
+            local root = require("lspconfig").util.root_pattern(".git", "package.json", "compile_commands.json")(fname)
+            return root or vim.loop.cwd()
+          end,
+
+          -- Ensure it triggers on the filetypes you care about
+          filetypes = { "c", "cpp" },
+        })
+        require("lspconfig")[server].setup(opts)
+      end,
     },
     -- Configure buffer local auto commands to add when attaching a language server
     autocmds = {

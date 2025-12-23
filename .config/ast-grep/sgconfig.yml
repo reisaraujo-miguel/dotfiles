@@ -1,0 +1,7 @@
+# sgconfig.yaml
+ruleDirs:
+  - rules
+
+# Optional: Define utility rules here if you want to reuse patterns
+# utils:
+#   include-guard: ...

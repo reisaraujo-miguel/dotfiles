@@ -2,7 +2,7 @@
 
 ---@type LazySpec
 return {
-  -- use mason-tool-installer for automatically installing Mason packages
+  -- use mason-tool-installer para automaticamente automatically installing Mason packages
   {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     -- overrides `require("mason-tool-installer").setup(...)`
@@ -11,9 +11,14 @@ return {
       ensure_installed = {
         -- install language servers
         "lua-language-server",
+        "ansible-language-server",
+
+        -- install linters
+        "ansible-lint",
 
         -- install formatters
         "stylua",
+        "prettier",
 
         -- install debuggers
         "debugpy",

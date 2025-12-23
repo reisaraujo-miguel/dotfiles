@@ -25,6 +25,7 @@ return {
   { import = "astrocommunity.pack.cmake" },
   { import = "astrocommunity.pack.go" },
   { import = "astrocommunity.pack.typescript-all-in-one" },
+  { import = "astrocommunity.pack.prettier" },
   { import = "astrocommunity.pack.html-css" },
   { import = "astrocommunity.pack.python" },
   { import = "astrocommunity.pack.php" },
