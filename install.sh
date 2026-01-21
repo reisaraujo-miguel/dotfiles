@@ -76,6 +76,11 @@ fi
 backup_existing() {
 	local target_path="$1"
 
+	# Skip backup if NO_BACKUP is true
+	if [ "$NO_BACKUP" = true ]; then
+		return
+	fi
+
 	if [[ -L "$target_path" ]]; then
 		return
 	fi
@@ -83,7 +88,7 @@ backup_existing() {
 	if [[ -f "$target_path" ]] || [[ -d "$target_path" ]]; then
 		local backup_file
 		backup_file="$BACKUP_DIR/$(basename "$target_path")"
-		mv "$target_path" "$backup_file"
+		mv "$target_path" "$backup_file" 2>/dev/null || echo "Could not backup $target_path (may not exist)"
 		echo "Backed up existing file: $target_path to $backup_file"
 	fi
 }
@@ -92,8 +97,25 @@ backup_existing() {
 link_or_copy() {
 	local source="$1"
 	local target="$2"
+
+	# Check if source is a symlink
+	if [[ -L "$source" ]]; then
+		local link_target
+		link_target=$(readlink -f "$source")
+		local target_dir
+		target_dir=$(dirname "$target")
+
+		# Check if symlink target would create a loop
+		# If the symlink points to the same directory where it would be placed
+		if [[ "$link_target" == "$(readlink -f "$target_dir")" ]]; then
+			echo "WARNING: Skipping recursive symlink (points to parent directory): $source -> $link_target"
+			return
+		fi
+	fi
+
 	if "$COPY_FLAG"; then
-		cp -r "$source" "$target"
+		# Use -P to not follow symlinks when copying
+		cp -rP "$source" "$target"
 		echo "Copied: $source -> $target"
 	else
 		ln -sf "$source" "$target"
@@ -101,43 +123,34 @@ link_or_copy() {
 	fi
 }
 
-# Process top-level dotfiles (non-recursive)
-echo "Processing top-level dotfiles..."
-for item in "$DOTFILES_DIR"/.[!.]* "$DOTFILES_DIR"/*; do
-	[ ! -e "$item" ] && continue
+# Function to copy/symlink files in a directory level non recursively
+copy_dir_level() {
+	local source_dir="$1"
+	local target_dir="$2"
 
-	item_name=$(basename "$item")
-	if [[ " $EXCLUDE_FILES " =~ [[:space:]]"$item_name"[[:space:]] ]]; then
-		echo "Skipping excluded item: $item_name"
-		continue
-	fi
-
-	if [ -f "$item" ]; then
-		target_path="$HOME_DIR/$item_name"
-		backup_existing "$target_path"
-		link_or_copy "$item" "$target_path"
-	fi
-done
-
-# Process .config directory (non-recursive)
-echo "Processing .config directory..."
-dir=".config"
-source_dir="$DOTFILES_DIR/$dir"
-target_dir="$HOME_DIR/$dir"
-
-if [ -d "$source_dir" ]; then
 	mkdir -p "$target_dir"
 	echo "Created directory: $target_dir"
 
-	for item in "$source_dir"/*; do
+	for item in "$source_dir"/.[!.]* "$source_dir"/*; do
 		[ ! -e "$item" ] && continue
 
 		item_name=$(basename "$item")
+		if [[ " $EXCLUDE_FILES " =~ [[:space:]]"$item_name"[[:space:]] ]]; then
+			echo "Skipping excluded item: $item_name"
+			continue
+		fi
+
 		target_path="$target_dir/$item_name"
 		backup_existing "$target_path"
 		link_or_copy "$item" "$target_path"
 	done
-fi
+}
+
+# Process top-level dotfiles
+copy_dir_level "$DOTFILES_DIR" "$HOME_DIR"
+
+# Process .config directory dotfiles
+copy_dir_level "$DOTFILES_DIR/.config" "$HOME_DIR/.config"
 
 # Add git Configurations
 if command -v git &>/dev/null; then
@@ -159,6 +172,7 @@ if command -v git &>/dev/null; then
 	git config --global init.defaultBranch "main"
 fi
 
+# Function to append a line to a file if it doesn't already exist
 append_if_missing() {
 	local file="$1"
 	local line="$2"
