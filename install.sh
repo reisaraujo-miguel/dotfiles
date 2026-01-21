@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # install.sh --help output
 HELP_TEXT="\
@@ -10,10 +10,10 @@ Options:
 	-h, --help:		show this help dialog."
 
 # Configuration
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"               # Use the absolute path of the script directory
-HOME_DIR=$HOME                                                             # Default installation directory
-BACKUP_DIR="$DOTFILES_DIR/dotfiles_backup/dotfiles.$(date +%Y%m%d_%H%M%S)" # Backup directory for existing configs
-EXCLUDE_FILES=".git .gitignore LICENSE README.md install.sh"               # Files/dirs to exclude
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"                         # Use the absolute path of the script directory
+HOME_DIR=$HOME                                                                       # Default installation directory
+BACKUP_DIR="$DOTFILES_DIR/dotfiles_backup/dotfiles.$(date +%Y%m%d_%H%M%S)"           # Backup directory for existing configs
+EXCLUDE_FILES=".git .gitignore .config dotfiles_backup LICENSE README.md install.sh" # Files/dirs to exclude
 
 # Flag variables
 EXCLUDE_FLAG=false
@@ -67,7 +67,7 @@ if $EXCLUDE_FLAG; then
 fi
 
 # create backup directory if it doesn't exist
-if [ ! -d "$BACKUP_DIR" ] && [ ! "$NO_BACKUP" ]; then
+if [[ ! -d "$BACKUP_DIR" ]] && [[ "$NO_BACKUP" == false ]]; then
 	mkdir -p "$BACKUP_DIR"
 	echo "Created backup directory: $BACKUP_DIR"
 fi
@@ -77,7 +77,7 @@ backup_existing() {
 	local target_path="$1"
 
 	# Skip backup if NO_BACKUP is true
-	if [ "$NO_BACKUP" = true ]; then
+	if [[ "$NO_BACKUP" == true ]]; then
 		return
 	fi
 
@@ -118,6 +118,10 @@ link_or_copy() {
 		cp -rP "$source" "$target"
 		echo "Copied: $source -> $target"
 	else
+		# Remove existing symlink if it exists to avoid ln creating symlinks inside directories
+		if [[ -L "$target" ]]; then
+			rm -f "$target"
+		fi
 		ln -sf "$source" "$target"
 		echo "Symlinked: $target -> $source"
 	fi
