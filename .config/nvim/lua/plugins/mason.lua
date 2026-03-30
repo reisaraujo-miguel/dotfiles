@@ -2,7 +2,7 @@
 
 ---@type LazySpec
 return {
-  -- use mason-tool-installer para automaticamente automatically installing Mason packages
+  -- use mason-tool-installer for automatically installing Mason packages
   {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     -- overrides `require("mason-tool-installer").setup(...)`
@@ -19,6 +19,7 @@ return {
         -- install formatters
         "stylua",
         "prettier",
+        "clang-format",
 
         -- install debuggers
         "debugpy",

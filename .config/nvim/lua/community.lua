@@ -11,8 +11,8 @@ return {
   { import = "astrocommunity.bars-and-lines.vim-illuminate" },
   { import = "astrocommunity.utility.neodim" },
   { import = "astrocommunity.markdown-and-latex.markview-nvim" },
-  { import = "astrocommunity.completion.copilot-lua-cmp" },
-  { import = "astrocommunity.completion.avante-nvim" },
+
+  { import = "astrocommunity.ai.avante-nvim" },
 
   { import = "astrocommunity.test.neotest" },
 

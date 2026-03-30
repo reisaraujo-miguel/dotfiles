@@ -30,6 +30,7 @@ return {
       },
       filename = {
         [".foorc"] = "fooscript",
+        ["Caddyfile"] = "caddyfile",
       },
       pattern = {
         [".*/etc/foo/.*"] = "fooscript",
@@ -44,8 +45,7 @@ return {
         spelllang = { "en", "pt" },
         spellfile = vim.fn.stdpath "config" .. "/spell/en.utf-8.add,pt.utf-8.add",
         signcolumn = "yes", -- sets vim.opt.signcolumn to yes
-        wrap = true, -- sets vim.opt.wrap
-        laststatus = 3,
+        wrap = false, -- sets vim.opt.wrap
       },
       g = { -- vim.g.<key>
         -- configure global vim variables (vim.g)
@@ -94,7 +94,7 @@ return {
         ["j"] = "gj",
         ["k"] = "gk",
       },
-      o = {
+      i = {
         -- Move by visual lines instead of logical ones
         ["<Down>"] = "gj",
         ["<Up>"] = "gk",
