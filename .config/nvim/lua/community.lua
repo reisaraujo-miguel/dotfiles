@@ -7,12 +7,9 @@ return {
   "AstroNvim/astrocommunity",
   -- import/override with your plugins folder
 
-  { import = "astrocommunity.colorscheme.catppuccin" },
   { import = "astrocommunity.bars-and-lines.vim-illuminate" },
   { import = "astrocommunity.utility.neodim" },
   { import = "astrocommunity.markdown-and-latex.markview-nvim" },
-
-  { import = "astrocommunity.ai.avante-nvim" },
 
   { import = "astrocommunity.test.neotest" },
 

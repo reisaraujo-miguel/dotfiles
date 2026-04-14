@@ -94,7 +94,7 @@ return {
         ["j"] = "gj",
         ["k"] = "gk",
       },
-      i = {
+      o = {
         -- Move by visual lines instead of logical ones
         ["<Down>"] = "gj",
         ["<Up>"] = "gk",

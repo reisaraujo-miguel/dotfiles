@@ -216,4 +216,22 @@ if [[ "$INCREASE_MAP_COUNT" == "y" ]]; then
 	echo "Parameters applied, restart to take effect."
 fi
 
+read -rp "Run Fedora install script? [y/n]: " INSTALL_FEDORA
+
+if [[ "$INSTALL_FEDORA" == "y" ]]; then
+	append_if_missing "/etc/dnf/dnf.conf" "max_parallel_downloads=10"
+	append_if_missing "/etc/dnf/dnf.conf" "fastestmirror=True"
+	bash ./fedora-setup.sh
+fi
+
+read -rp "Run Flatpak install script? [y/n]: " INSTALL_FLATPAK
+
+if [[ "$INSTALL_FLATPAK" == "y" ]]; then
+	bash ./flatpak-setup.sh
+fi
+
 echo "Dotfiles installation complete."
+
+echo "You should restart your system."
+
+sudo systemctl reboot

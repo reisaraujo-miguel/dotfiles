@@ -12,13 +12,13 @@ return {
         -- install language servers
         "lua-language-server",
         "ansible-language-server",
+        "postgres-language-server",
 
         -- install linters
         "ansible-lint",
 
         -- install formatters
         "stylua",
-        "prettier",
         "clang-format",
 
         -- install debuggers
