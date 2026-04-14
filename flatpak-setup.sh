@@ -12,4 +12,4 @@ INSTALL=(
   com.mattjakeman.ExtensionManager
 )
 
-flatpak install flathub "${PACKAGES[@]}"
+flatpak install flathub "${INSTALL[@]}"
