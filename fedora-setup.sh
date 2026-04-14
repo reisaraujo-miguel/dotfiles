@@ -11,6 +11,7 @@ sudo dnf5 -y upgrade --refresh
 
 PACKAGES=(
   zsh
+  zsh-completions
   zsh-autosuggestions
   zsh-syntax-highlighting
   gcc
