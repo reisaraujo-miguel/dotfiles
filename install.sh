@@ -10,10 +10,10 @@ Options:
 	-h, --help:		show this help dialog."
 
 # Configuration
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"                         # Use the absolute path of the script directory
-HOME_DIR=$HOME                                                                       # Default installation directory
-BACKUP_DIR="$DOTFILES_DIR/dotfiles_backup/dotfiles.$(date +%Y%m%d_%H%M%S)"           # Backup directory for existing configs
-EXCLUDE_FILES=".git .gitignore .config dotfiles_backup LICENSE README.md install.sh" # Files/dirs to exclude
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"                                                          # Use the absolute path of the script directory
+HOME_DIR=$HOME                                                                                                        # Default installation directory
+BACKUP_DIR="$DOTFILES_DIR/dotfiles_backup/dotfiles.$(date +%Y%m%d_%H%M%S)"                                            # Backup directory for existing configs
+EXCLUDE_FILES=".git .gitignore .config dotfiles_backup LICENSE README.md install.sh fedora-setup.sh flatpak-setup.sh" # Files/dirs to exclude
 
 # Flag variables
 EXCLUDE_FLAG=false
