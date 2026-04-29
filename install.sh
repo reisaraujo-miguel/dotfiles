@@ -212,8 +212,6 @@ if [[ "$INCREASE_MAP_COUNT" == "y" ]]; then
 
 	append_if_missing "/etc/security/limits.conf" "* hard nofile 1048576"
 	append_if_missing "/etc/security/limits.conf" "* soft nofile 1048576"
-
-	echo "Parameters applied, restart to take effect."
 fi
 
 read -rp "Run Fedora install script? [y/n]: " INSTALL_FEDORA
@@ -234,4 +232,8 @@ echo "Dotfiles installation complete."
 
 echo "You should restart your system."
 
-sudo systemctl reboot
+read -rp "Restart now? [y/n]: " RESTART
+
+if [[ "$RESTART" == "y" ]]; then
+	sudo systemctl reboot
+fi

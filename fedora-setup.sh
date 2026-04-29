@@ -2,16 +2,19 @@
 set -ouex pipefail
 
 # Terra repos
-sudo dnf install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
+if ! dnf repo list | grep terra; then
+  sudo dnf5 install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
+fi
 
+sudo dnf5 -y copr enable atim/starship
 sudo dnf5 -y copr enable dusansimic/themes
-sudo dnf5 -y copr enbale che/nerd-fonts
+sudo dnf5 -y copr enable che/nerd-fonts
 
 sudo dnf5 -y upgrade --refresh
 
 PACKAGES=(
+  ghostty
   zsh
-  zsh-completions
   zsh-autosuggestions
   zsh-syntax-highlighting
   gcc
@@ -43,6 +46,7 @@ PACKAGES=(
 sudo dnf5 -y install "${PACKAGES[@]}"
 
 REMOVE=(
+  ptyxis
   firefox
   firefox-langpacks
 )
@@ -51,16 +55,18 @@ REMOVE=(
 if [[ "${#REMOVE[@]}" -gt 0 ]]; then
   readarray -t INSTALLED_EXCLUDED < <(rpm -qa --queryformat='%{NAME}\n' "${REMOVE[@]}" 2>/dev/null || true)
   if [[ "${#INSTALLED_EXCLUDED[@]}" -gt 0 ]]; then
-    sudo dnf -y remove "${INSTALLED_EXCLUDED[@]}"
+    sudo dnf5 -y remove "${INSTALLED_EXCLUDED[@]}"
   else
     echo "No excluded packages found to remove."
   fi
 fi
 
 # Docker
-dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
-sed -i "s/enabled=.*/enabled=0/g" /etc/yum.repos.d/docker-ce.repo
-dnf -y install --enablerepo=docker-ce-stable \
+if ! dnf repo list | grep "docker-ce"; then
+  sudo dnf5 config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
+fi
+
+sudo dnf5 -y install \
   containerd.io \
   docker-buildx-plugin \
   docker-ce \
@@ -68,11 +74,15 @@ dnf -y install --enablerepo=docker-ce-stable \
   docker-compose-plugin \
   docker-model-plugin
 
+sudo usermod -a -G docker "$USER"
+
 # VPN Forticlient
 
-sudo dnf config-manager --add-repo https://repo.fortinet.com/repo/forticlient/7.4/centos/8/os/x86_64/fortinet.repo
+if ! dnf repo list | grep "fortinet"; then
+  sudo dnf5 config-manager addrepo --from-repofile=https://repo.fortinet.com/repo/forticlient/7.4/centos/8/os/x86_64/fortinet.repo
+fi
 
-sudo dnf5 install forticlient
+sudo dnf5 -y install forticlient
 
 # Enable systemd thingies
 sudo systemctl enable --now bpftune
