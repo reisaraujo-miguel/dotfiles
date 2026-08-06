@@ -23,6 +23,21 @@ export GOPATH="$XDG_DATA_HOME/go"
 export GOMODCACHE="$XDG_CACHE_HOME/go/mod"
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"
 
+if [[ -f "$HOME/.avante/deepseek_api_key" ]]; then
+	export DEEPSEEK_API_KEY
+	DEEPSEEK_API_KEY=$(cat "$HOME/.avante/deepseek_api_key")
+fi
+
+if [[ -f "$HOME/.avante/google_search_api_key" ]]; then
+	export GOOGLE_SEARCH_API_KEY
+	GOOGLE_SEARCH_API_KEY=$(cat "$HOME/.avante/google_search_api_key")
+fi
+
+if [[ -f "$HOME/.avante/google_search_engine_id" ]]; then
+	export GOOGLE_SEARCH_ENGINE_ID
+	GOOGLE_SEARCH_ENGINE_ID=$(cat "$HOME/.avante/google_search_engine_id")
+fi
+
 # Source global definitions
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc

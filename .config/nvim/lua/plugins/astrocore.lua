@@ -45,7 +45,7 @@ return {
         spelllang = { "en", "pt" },
         spellfile = vim.fn.stdpath "config" .. "/spell/en.utf-8.add,pt.utf-8.add",
         signcolumn = "yes", -- sets vim.opt.signcolumn to yes
-        wrap = false, -- sets vim.opt.wrap
+        wrap = true, -- sets vim.opt.wrap
       },
       g = { -- vim.g.<key>
         -- configure global vim variables (vim.g)

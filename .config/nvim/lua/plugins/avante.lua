@@ -4,6 +4,7 @@ return {
   "yetone/avante.nvim",
   build = "make",
   event = "User AstroFile", -- load on file open because Avante manages it's own bindings
+  version = false,
   cmd = {
     "AvanteAsk",
     "AvanteBuild",
@@ -25,17 +26,19 @@ return {
     { "AstroNvim/astrocore", opts = function(_, opts) opts.mappings.n[prefix] = { desc = " Avante" } end },
   },
   opts = {
-    auto_suggestions_provider = "deepseek",
+    instructions_file = "avante.md",
+    -- auto_suggestions_provider = "deepseek",
     provider = "deepseek",
     providers = {
       deepseek = {
         __inherited_from = "openai",
         api_key_name = "DEEPSEEK_API_KEY",
-        endpoint = "https://api.deepseek.com/v1",
-        model = "deepseek-chat",
+        endpoint = "https://api.deepseek.com",
+        model = "deepseek-v4-pro",
         extra_request_body = {
-          temperature = 0.75,
-          max_tokens = 8192,
+          thinking = { type = "enabled" },
+          reasoning_effort = "max",
+          max_tokens = 393216,
         },
       },
     },
@@ -87,19 +90,6 @@ return {
                 avante = { module = "blink-cmp-avante", name = "Avante" },
               },
             },
-          },
-        },
-      },
-    },
-    { -- if copilot.lua is available, default to copilot provider
-      "zbirenbaum/copilot.lua",
-      optional = true,
-      specs = {
-        {
-          "yetone/avante.nvim",
-          opts = {
-            provider = "copilot",
-            auto_suggestions_provider = "copilot",
           },
         },
       },

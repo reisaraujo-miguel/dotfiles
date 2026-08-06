@@ -10,6 +10,8 @@ INSTALL=(
   dev.vencord.Vesktop
   org.telegram.desktop
   com.mattjakeman.ExtensionManager
+  org.gtk.Gtk3theme.adw-gtk3
+  org.gtk.Gtk3theme.adw-gtk3-dark
 )
 
 flatpak install flathub "${INSTALL[@]}"
